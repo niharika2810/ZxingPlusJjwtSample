@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Base64
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.journeyapps.barcodescanner.DecoratedBarcodeView
 import com.journeyapps.barcodescanner.camera.CameraSettings
@@ -49,9 +50,11 @@ class ScanActivity : AppCompatActivity(),
 
     private fun initCapture(savedInstanceState: Bundle?) {
         capture = CustomCaptureManager(this, barcodeScanner)
+        capture?.setShowMissingCameraPermissionDialog(true)
         barcodeScanner.barcodeView.cameraSettings = camSettings
         capture?.setViewCaptureListener(this)
         capture?.initializeFromIntent(intent, savedInstanceState)
+
         capture?.decode()
     }
 
@@ -85,4 +88,32 @@ class ScanActivity : AppCompatActivity(),
         return Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(jwtToken)
     }
 
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        capture?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        capture?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        capture?.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        capture?.onDestroy()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        capture?.onSaveInstanceState(outState)
+    }
 }

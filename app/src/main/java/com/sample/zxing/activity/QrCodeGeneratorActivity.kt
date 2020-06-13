@@ -29,6 +29,7 @@ class QrCodeGeneratorActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         imageView = findViewById(R.id.scan_code)
+        scanNow = findViewById(R.id.scan_btn)
         setImage()
         scanNow.setOnClickListener {
             launchScanScreen()

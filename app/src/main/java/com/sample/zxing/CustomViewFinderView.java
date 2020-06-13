@@ -57,16 +57,16 @@ public class CustomViewFinderView extends ViewfinderView {
 
         Resources resources = getResources();
         // Get setted attributes on view
-        TypedArray attributes = getContext().obtainStyledAttributes(attrs, com.google.zxing.client.android.R.styleable.zxing_finder);
+        TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.zxing_finder);
 
-        this.maskColor = attributes.getColor(com.google.zxing.client.android.R.styleable.zxing_finder_zxing_viewfinder_mask,
-                resources.getColor(com.google.zxing.client.android.R.color.zxing_viewfinder_mask));
-        this.resultColor = attributes.getColor(com.google.zxing.client.android.R.styleable.zxing_finder_zxing_result_view,
-                resources.getColor(com.google.zxing.client.android.R.color.zxing_result_view));
-        this.laserColor = attributes.getColor(com.google.zxing.client.android.R.styleable.zxing_finder_zxing_viewfinder_laser,
-                resources.getColor(com.google.zxing.client.android.R.color.zxing_transparent));
-        this.resultPointColor = attributes.getColor(com.google.zxing.client.android.R.styleable.zxing_finder_zxing_possible_result_points,
-                resources.getColor(com.google.zxing.client.android.R.color.zxing_possible_result_points));
+        this.maskColor = attributes.getColor(R.styleable.zxing_finder_zxing_viewfinder_mask,
+                resources.getColor(R.color.zxing_viewfinder_mask));
+        this.resultColor = attributes.getColor(R.styleable.zxing_finder_zxing_result_view,
+                resources.getColor(R.color.zxing_result_view));
+        this.laserColor = attributes.getColor(R.styleable.zxing_finder_zxing_viewfinder_laser,
+                resources.getColor(R.color.zxing_transparent));
+        this.resultPointColor = attributes.getColor(R.styleable.zxing_finder_zxing_possible_result_points,
+                resources.getColor(R.color.zxing_possible_result_points));
 
         attributes.recycle();
 
