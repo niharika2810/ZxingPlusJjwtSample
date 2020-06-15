@@ -2,7 +2,7 @@
 
 A demo application for generating QR code and scanning <a href="https://github.com/jwtk/jjwt">JJWT</a> token.
 
-using <a href=""> zxing-android-embedded</a> and <a href="">zxing</a>for generating and scanning QR code.
+using <a href=""> zxing-android-embedded</a> and <a href="">zxing</a> for generating and scanning QR code.
 
 Some Features of **Zxing** library:
 
