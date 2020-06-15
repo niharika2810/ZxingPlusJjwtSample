@@ -1,37 +1,107 @@
-## Welcome to GitHub Pages
+## ZxingPlusJjwtSample
 
-You can use the [editor on GitHub](https://github.com/niharika2810/ZxingPlusJjwtSample/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+A demo application for generating QR code and scanning <a href="https://github.com/jwtk/jjwt">JJWT</a> token.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+using <a href=""> zxing-android-embedded</a> and <a href="">zxing</a>for generating and scanning QR code.
 
-### Markdown
+Some Features of **Zxing** library:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+1. Can be used via Intents (little code required).
+2. Can be embedded in an Activity, for advanced customization of UI and logic.
+3. Scanning can be performed in landscape or portrait mode.
+4. Camera is managed in a background thread, for fast startup time.
 
-```markdown
-Syntax highlighted code block
+**JJWT** aims to be the easiest to use and understand library for creating and verifying JSON Web Tokens (JWTs) on the JVM
+and Android.
 
-# Header 1
-## Header 2
-### Header 3
+JJWT is a pure Java implementation based 
+exclusively on the [JWT](https://tools.ietf.org/html/rfc7519), 
+[JWS](https://tools.ietf.org/html/rfc7515), [JWE](https://tools.ietf.org/html/rfc7516), 
+[JWK](https://tools.ietf.org/html/rfc7517) and [JWA](https://tools.ietf.org/html/rfc7518) RFC specifications and 
+open source under the terms of the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
 
-- Bulleted
-- List
+### Usage
 
-1. Numbered
-2. List
+## QR code generation
 
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```java
+        val qrText = "Your qr code hash here"
+        val multiFormatWriter = MultiFormatWriter()
+        try {
+            bitMatrix?.clear()
+            val size = convertDpToPixel()
+            bitMatrix = multiFormatWriter.encode(
+                    qrText,
+                    BarcodeFormat.QR_CODE,
+                    size,
+                    size
+            )
+            val barcodeEncoder = BarcodeEncoder()
+            val bitmap = barcodeEncoder.createBitmap(bitMatrix)
+            imageView.setImageBitmap(bitmap)
+        } catch (e: WriterException) { //do nothing
+        }
 ```
+<br/>
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+## Decrypting JJWT token
 
-### Jekyll Themes
+```java
+        val publicKeyBytes = Base64.decode("your public key", Base64.DEFAULT)
+        // create a key object from the bytes
+        val keySpec =
+            X509EncodedKeySpec(publicKeyBytes)
+        val keyFactory = KeyFactory.getInstance("RSA")
+        val publicKey = keyFactory.generatePublic(keySpec)
+        return Jwts.parserBuilder().setSigningKey(publicKey).build().parseClaimsJws(jwtToken)
+```
+<br/>
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/niharika2810/ZxingPlusJjwtSample/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## Scanning and Extracting result from QR code
 
-### Support or Contact
+```java
+        capture = CustomCaptureManager(this, barcodeScanner)
+        capture?.setShowMissingCameraPermissionDialog(true)
+        barcodeScanner.barcodeView.cameraSettings = camSettings
+        capture?.setViewCaptureListener(this)
+        capture?.initializeFromIntent(intent, savedInstanceState)
+        capture?.decode()
+```
+<br/>
+In other lifecycle methods,add this-<br/>
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+```java
+ override fun onResume() {
+        super.onResume()
+        capture?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        capture?.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        capture?.onDestroy()
+    }
+```
+<br/>
+
+On getting the result,you can extract keys like this-
+```java
+
+  //show your result here
+        val claimsJws: Jws<Claims?>?
+        try {
+            claimsJws = decryptFile(json)
+            //extract your keys from claimJws
+            val stringKey = claimsJws?.body?.get("your key name", String::class.java)
+            val intKey = claimsJws?.body?.get("your key name", Integer::class.java)
+        } catch (e: Exception) {
+            //handle exception
+        }
+``` 
+<br/>
+
+Happy Coding!!
